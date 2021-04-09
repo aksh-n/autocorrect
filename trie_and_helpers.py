@@ -1,3 +1,7 @@
+import string
+
+PUNCTUATIONS = string.punctuation + '–”“'
+
 class _Trie_Node:
     """A Trie Node.
     
@@ -40,6 +44,7 @@ class Trie:
     
     def insert(self, word: str) -> None:
         """Inserts a word in the Trie."""
+        word = word.lower()
         curr_node = self.root
         for i in range(len(word)):
             letter = word[i]
@@ -53,6 +58,7 @@ class Trie:
     
     def lookup_word(self, string: str) -> bool:
         """Returns whether the string is a word in the Trie."""
+        string = string.lower()
         curr_node = self.root
         for i in range(len(string)):
             letter = string[i]
@@ -83,5 +89,23 @@ def make_trie_from_file(filename: str) -> Trie:
     with open(filename, "r", encoding='utf-8', errors='ignore') as f:
         text = f.read()
         words = text.split()
-    return make_trie(words)
+        new_words = _clean_up_words(words)
+    return make_trie(new_words)
+
+
+def _clean_up_words(words: list) -> list:
+    """Returns a list of words after filtering the list words.
+    Words that are solely numbers and/or punctuations are filtered out.
+    """
+    new_words = []
+    for word in words:
+        if all(l in PUNCTUATIONS or l.isnumeric() for l in word):
+            pass
+        else:  # you could technically do it without pass, but it seems clearer to me like this.
+            if word[-2:] == "'s":  # removes the possessive 's
+                word = word[:-2]
+            new_word = word.strip(PUNCTUATIONS)  # note hypenated words are allowed
+            new_words.append(new_word)
+    return new_words
+
     
