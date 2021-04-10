@@ -4,7 +4,7 @@ PUNCTUATIONS = string.punctuation + '–”“'
 
 class _Trie_Node:
     """A Trie Node.
-    
+
     Instance Attributes:
         - letter: The letter this Trie Node corresponds to.
         - childred: A dictionary which denotes the children of the Trie Node. 
@@ -13,15 +13,15 @@ class _Trie_Node:
     """
     def __init__(self, letter: str = None) -> None:
         """Initializes an Trie Node.
-        
+
         """
         self.letter = letter  # this is not strictly needed; may remove due to space constraints
         self.children = {}
         self.is_word = False
-    
+
     def _all_words_helper(self, string_so_far: str = "") -> list:
         """Returns a list of strings.
-        
+
         Each string is a concatenation of string_so_far and a string whose last letter 
         is the end of word.
         """
@@ -41,7 +41,7 @@ class Trie:
     def __init__(self) -> None:
         """Initializes an empty Trie."""
         self.root = _Trie_Node()  # The root node doesn't correspond to a letter
-    
+
     def insert(self, word: str) -> None:
         """Inserts a word in the Trie."""
         word = word.lower()
@@ -55,13 +55,13 @@ class Trie:
 
             if i == len(word) - 1:
                 curr_node.is_word = True
-    
-    def lookup_word(self, string: str) -> bool:
+
+    def lookup_word(self, _string: str) -> bool:
         """Returns whether the string is a word in the Trie."""
-        string = string.lower()
+        _string = _string.lower()
         curr_node = self.root
-        for i in range(len(string)):
-            letter = string[i]
+        for i in range(len(_string)):
+            letter = _string[i]
 
             if letter not in curr_node.children:
                 return False
@@ -69,7 +69,7 @@ class Trie:
                 curr_node = curr_node.children[letter]
 
         return curr_node.is_word
-    
+
     def all_words(self) -> list:
         """Returns all the words in the Trie."""
         return self.root._all_words_helper()
@@ -107,5 +107,3 @@ def _clean_up_words(words: list) -> list:
             new_word = word.strip(PUNCTUATIONS)  # note hypenated words are allowed
             new_words.append(new_word)
     return new_words
-
-    
