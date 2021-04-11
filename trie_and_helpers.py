@@ -91,7 +91,6 @@ class Trie:
         return prefix + suffix
             
 
-
 # Helper methds relating to Trie
 def make_trie(words: list) -> Trie:
     """Returns a Trie with all the words in the list words inserted."""
