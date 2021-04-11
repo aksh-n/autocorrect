@@ -7,6 +7,7 @@ class _BKNode:
 
     def __init__(self, word: str) -> None:
         self.word = word
+        self.children = {}
 
     def similar_words(self, word: str, tolerance: int) -> list[str]:
         """Return a list of words with levenshtein distance <= tolerance from self.word.
