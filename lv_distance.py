@@ -14,5 +14,5 @@ def levenshtein(s1: str, s2: str) -> int:
         dp[0] = i + 1
         for d in range(1, len(dp)):
             dp[d] = min(dp[d], dp[d - 1] + 1)
-        print(dp)
+        # print(dp)
     return dp[-1]
