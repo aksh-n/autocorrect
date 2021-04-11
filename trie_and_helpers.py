@@ -73,6 +73,23 @@ class Trie:
     def all_words(self) -> list:
         """Returns all the words in the Trie."""
         return self.root._all_words_helper()
+    
+    def autocomplete_from_prefix(self, prefix: str) -> str:
+        """Returns a word inserted in the trie from the given prefix."""
+        node = self.root
+        for char in prefix:
+            if char not in node.children:
+                return ""
+            node = node.children[char]
+        suffix = ""
+        while not node.is_word:
+            children = list(node.children.keys())
+            if len(children) == 0:
+                return ""
+            node = node.children[children[0]]
+            suffix += node.letter
+        return prefix + suffix
+            
 
 
 # Helper methds relating to Trie
