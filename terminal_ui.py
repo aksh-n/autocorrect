@@ -1,5 +1,5 @@
 import cmd
-from trie_and_helpers import Trie, make_trie_from_file
+from trie import Trie, make_trie_from_file
 
 addresses = [
     'here@blubb.com',
