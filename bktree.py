@@ -1,4 +1,5 @@
 from lv_distance import levenshtein
+from helpers import clean_up_words
 
 class _BKNode:
     """A node in a BK Tree."""
@@ -55,6 +56,27 @@ class BKTree:
 
         curr.children[dist] = _BKNode(word)
 
-    def get_similar_words(self, word: str, tolerance: int) -> list[str]:
+    def get_similar_words(self, word: str, tolerance: int = 2) -> list[str]:
         """Return a list of words with editing distance <= tolerance from the root."""
         return self.root.similar_words(word, tolerance)
+
+def make_bktree(words: list[str]) -> BKTree:
+    """Make a BKTree from a list of words.
+
+    The argument words should NOT be empty.
+    """
+    tree = BKTree(words[0])
+
+    for each in words[1:]:
+        tree.insert(each)
+
+    return tree
+
+def make_bktree_from_file(filename: str) -> BKTree:
+    """Make a BKTree from a file."""
+    with open(filename, "r", encoding='utf-8', errors='ignore') as f:
+        text = f.read()
+        words = text.split()
+        new_words = clean_up_words(words)
+
+    return make_bktree(new_words)
