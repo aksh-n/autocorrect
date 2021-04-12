@@ -1,4 +1,5 @@
 from typing import Iterator
+from trie import Trie, _Trie_Node
 
 
 def levenshtein_dynamic(s1: str, s2: str) -> int:
@@ -60,7 +61,7 @@ class NFA:
         next_states = set()
         for state in states:
             next_states |= set(self.transitions(state, c))
-        next_states = self.simplify(next_states)
+        next_states = set(self.simplify(next_states))
         return next_states
     
     def step_all(self, states, inputs) -> set:
@@ -142,8 +143,8 @@ class LevenshteinNFA(NFA):
                 # k edits used
                 yield offset + k + 1, d - k
     
-    def simplify(self, states: set) -> set:
-        """Returns a equivalent, reduced set of the given states."""
+    def simplify(self, states: set) -> Iterator[tuple]:
+        """Returns a equivalent, reduced iterator of the given states."""
     
         def _implies(state1: tuple, state2: tuple) -> bool:
             """Returns whether state1 implies state2.
@@ -173,5 +174,44 @@ class LevenshteinNFA(NFA):
             return True
         
         return filter(_is_useful, states)
-        
-        
+    
+    def get_similar_words(self, trie: Trie, N: int = -1) -> list[str]:
+        """Returns the N-most similar words.
+        If N is not specified, all words are returned.
+        """
+        res = self.intersection_with_trie_dfs(trie)
+        if N == -1 or N >= len(res):
+            return [ele[1] for ele in res]
+        else:
+            return [res[i][1] for i in range(N)]
+    
+    def intersection_with_trie_dfs(self, trie: Trie) -> list[str]:
+        """Returns the words in trie that are within self.D edit distance from the
+        self.query string. They are ordered by least edits made.
+        This implementation uses Depth-First Search (DFS).
+
+        Intersection is a specific terminology.
+        The intersection of two languages, L1 and L2, (of two automata) is the language of all
+        strings that are in both L1 and L2.
+        """
+        root = trie.root
+        initial_states = self.initial_states()
+        res = self._helper_intersection(initial_states, root, '')
+        res.sort(key=lambda x: x[0])
+        return res
+
+    def _helper_intersection(self, states: tuple, node: _Trie_Node, string_so_far: str) -> list:
+        """Returns the words with their edit distance in trie that are within self.D edit
+        distance from the self.query string, by using recursion with DFS."""
+        if states == set():
+            return []
+
+        res = []
+        least_num_edits = self.accept_best(states)
+        if node.is_word and least_num_edits != -1:
+            res.append((least_num_edits, string_so_far))
+        for child, child_node in node.children.items():
+            new_string_so_far = string_so_far + child_node.letter
+            new_states = self.step(states, child)
+            res.extend(self._helper_intersection(new_states, child_node, new_string_so_far))
+        return res
