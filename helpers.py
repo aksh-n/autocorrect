@@ -3,7 +3,7 @@ import string
 
 PUNCTUATIONS = string.punctuation + '–”“'
 
-def _clean_up_words(words: list) -> list:
+def clean_up_words(words: list) -> list:
     """Returns a list of words after filtering the list words.
     Words that are solely numbers and/or punctuations are filtered out.
     """
