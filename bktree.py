@@ -1,3 +1,4 @@
+from typing import SupportsBytes
 from lv_distance import levenshtein
 from helpers import clean_up_words
 
@@ -24,6 +25,28 @@ class _BKNode:
         for child_dist, child in self.children.items():
             if dist - tolerance <= child_dist <= dist + tolerance:
                 sub_lst = child.similar_words(word, tolerance)
+                lst.extend(sub_lst)
+
+        return lst
+
+    def similar_words_ordered(self, word: str, tolerance: int) -> list[str]:
+        """Return a list of words with levenshtein distance <= tolerance from self.word,
+        in ascending order of their lv distance."""
+        lst = self._similar_helper(word, tolerance)
+        lst.sort(key=lambda each: each[1])
+        return [each[0] for each in lst]
+
+    def _similar_helper(self, word: str, tolerance: int) -> list[tuple[str, int]]:
+        """Helper for similar_words_ordered, returning tuples of (word, distance)."""
+        lst = []
+        dist = levenshtein(self.word, word)
+
+        if dist <= tolerance:
+            lst.append((self.word, dist))
+
+        for child_dist, child in self.children.items():
+            if dist - tolerance <= child_dist <= dist + tolerance:
+                sub_lst = child._similar_helper(word, tolerance)
                 lst.extend(sub_lst)
 
         return lst
@@ -59,6 +82,11 @@ class BKTree:
     def get_similar_words(self, word: str, tolerance: int = 2) -> list[str]:
         """Return a list of words with editing distance <= tolerance from the root."""
         return self.root.similar_words(word, tolerance)
+
+    def get_similar_words_ordered(self, word: str, tolerance: int = 2) -> list[str]:
+        """Return a list of words with editing distance <= tolerance from the root
+        in ascending order of their lv distance."""
+        return self.root.similar_words_ordered(word, tolerance)
 
 def make_bktree(words: list[str]) -> BKTree:
     """Make a BKTree from a list of words.
