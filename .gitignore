@@ -135,3 +135,4 @@ dmypy.json
 test_files/
 test_trie.py
 test_levenshtein.py
+test_timing.py
