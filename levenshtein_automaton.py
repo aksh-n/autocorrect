@@ -1,3 +1,4 @@
+from backend import Backend
 from typing import Iterator
 from trie import Trie, _Trie_Node
 
@@ -223,3 +224,21 @@ class LevenshteinNFA(NFA):
                 self._helper_intersection(new_states, child_node, new_string_so_far)
             )
         return res
+
+class LevenshteinBackend(Backend):
+    """A class implementing Backend for the Levenshtein Automaton data structure."""
+    _trie: Trie
+
+    def __init__(self, trie: Trie):
+        self._trie = trie
+
+    def get_suggestions(self, word: str, lim: int) -> list[str]:
+        tol = max(len(word) // 2, 1)
+        return LevenshteinNFA(word, tol).get_similar_words(self._trie, lim)
+
+
+if __name__ == '__main__':
+    from trie import *
+    a = make_trie_from_file('dictionary.txt')
+    b = LevenshteinBackend(a)
+    print(b.get_suggestions('he', 3))

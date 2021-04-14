@@ -1,6 +1,6 @@
+from backend import Backend
 from typing import SupportsBytes
-from lv_distance import levenshtein
-from helpers import clean_up_words
+from helpers import clean_up_words, levenshtein
 
 class _BKNode:
     """A node in a BK Tree."""
@@ -52,7 +52,7 @@ class _BKNode:
         return lst
 
 
-class BKTree:
+class BKTree(Backend):
     """An implementation of the BK Tree data structure."""
     root: _BKNode
 
@@ -87,6 +87,14 @@ class BKTree:
         """Return a list of words with editing distance <= tolerance from the root
         in ascending order of their lv distance."""
         return self.root.similar_words_ordered(word, tolerance)
+
+    def get_suggestions(self, word: str, lim: int = 3) -> list[str]:
+        # a tentative tolerance
+        tol = max(len(word) // 2, 1)
+        results = self.get_similar_words_ordered(word, tol)
+
+        return results[:lim]
+
 
 def make_bktree(words: list[str]) -> BKTree:
     """Make a BKTree from a list of words.

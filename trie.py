@@ -1,3 +1,6 @@
+from collections import deque
+from typing import Deque
+
 from helpers import clean_up_words
 
 class _Trie_Node:
@@ -33,6 +36,7 @@ class _Trie_Node:
             words_so_far.extend(words_from_child)
 
         return words_so_far
+
 
 class Trie:
     """A Trie."""
@@ -72,13 +76,14 @@ class Trie:
         """Returns all the words in the Trie."""
         return self.root._all_words_helper()
 
-    def autocomplete_from_prefix(self, prefix: str) -> str:
+    def complete_from_prefix(self, prefix: str) -> str:
         """Returns a word inserted in the trie from the given prefix."""
         node = self.root
         for char in prefix:
             if char not in node.children:
                 return ""
             node = node.children[char]
+
         suffix = ""
         while not node.is_word:
             children = list(node.children.keys())
@@ -88,6 +93,31 @@ class Trie:
             suffix += node.letter
         return prefix + suffix
 
+
+    def get_suggestions(self, word: str, lim: int = 3) -> list[str]:
+        """Return a maximum of 'limit' words which start with given prefix.
+
+        To get the closest words to prefix, we perform a BFS.
+        """
+        # first try to reach the node containing the last letter of word
+        node = self.root
+        for char in word:
+            if char not in node.children:
+                return []
+            node = node.children[char]
+
+        sug = []
+        queue = deque()
+        queue.append(('', node))
+
+        while queue and len(sug) < lim:
+            suf, node = queue.popleft()
+            if node.is_word:
+                sug.append(word + suf)
+            for each in node.children:
+                queue.append((suf + each, node.children[each]))
+
+        return sug
 
 # Helper methds relating to Trie
 def make_trie(words: list) -> Trie:
