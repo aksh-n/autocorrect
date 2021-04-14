@@ -1,15 +1,22 @@
-"""This module contains helper functions used across other modules."""
+"""Autocorrect, Helpers
+
+This module contains helper functions used across other modules.
+
+Copyright (c) 2021 Akshat Naik and Tony (Juntao) Hu.
+Licensed under the MIT License. See LICENSE in the project root for license information.
+"""
 import string
 
-PUNCTUATIONS = string.punctuation + '–”“'
 
 def clean_up_words(words: list) -> list:
     """Returns a list of words after filtering the list words.
     Words that are solely numbers and/or punctuations are filtered out.
     """
+    PUNCTUATIONS = string.punctuation + '–”“'
+
     new_words = []
     for word in words:
-        if all(l in PUNCTUATIONS or l.isnumeric() for l in word):
+        if all(letr in PUNCTUATIONS or letr.isnumeric() for letr in word):
             pass
         else:  # you could technically do it without pass, but it seems clearer to me like this.
             if word[-2:] == "'s":  # removes the possessive 's
@@ -17,6 +24,7 @@ def clean_up_words(words: list) -> list:
             new_word = word.strip(PUNCTUATIONS)  # note hypenated words are allowed
             new_words.append(new_word)
     return new_words
+
 
 def levenshtein(s1: str, s2: str) -> int:
     """Returns the minimum edit distance between strings s1 and s2.
@@ -35,8 +43,25 @@ def levenshtein(s1: str, s2: str) -> int:
         # print(dp)
     return dp[-1]
 
+
 def tol(word: str) -> int:
     """Return the tolerance (max number of edits) accepted for the specific word
     based on its length.
     """
     return min(3, max(len(word) // 2, 1))
+
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()
+
+    import python_ta.contracts
+    python_ta.contracts.check_all_contracts()
+
+    import python_ta
+    python_ta.check_all(config={
+        'extra-imports': ['string'],
+        'allowed-io': [],
+        'max-line-length': 100,
+        'disable': ['E1136']
+    })
