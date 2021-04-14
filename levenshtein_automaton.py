@@ -7,7 +7,7 @@ def levenshtein_dynamic(s1: str, s2: str) -> int:
     This function implements the Levenshtein distance algorithm using Dynamic Programming.
 
     Note: This function is not required by the levenshtein automaton, but I felt it that
-    it could be useful to illustrate the basic idea of the Levenshtein algorithm. 
+    it could be useful to illustrate the basic idea of the Levenshtein algorithm.
     """
     dp = list(range(0, len(s2) + 1))  # dp stands for dynamic programming
     # technically, I can reduce len(dp) to min(len(s1), len(s2)), but its not necessary.
@@ -38,14 +38,15 @@ def levenshtein_using_nfa(s1: str, s2: str, D: int = 2) -> int:
 
 class NFA:
     """A Non-Finite Deterministic Automaton abstract class.
-    
+
     Note: Some parameters and/or return value(s) of some methods are intentionally type annotated
     as the type annotation depends on how the child classes implement these methods.
     """
+
     def initial_states(self):
         """Returns the initial state(s)."""
         raise NotImplementedError
-    
+
     def accept(self, state):
         """Returns whether the given state is a terminal node in the NFA."""
         raise NotImplementedError
@@ -63,7 +64,7 @@ class NFA:
             next_states |= set(self.transitions(state, c))
         next_states = set(self.simplify(next_states))
         return next_states
-    
+
     def step_all(self, states, inputs) -> set:
         """Returns the new set of states, which are created by transitioning from the given
         states using multiple inputs given in inputs.
@@ -73,7 +74,7 @@ class NFA:
         for c in inputs:
             next_states = self.step(next_states, c)
         return next_states
-    
+
     def simplify(self, states) -> set:
         """Returns an equivalent, reduced set of the given states. It is the identity function
         by default.
@@ -83,11 +84,11 @@ class NFA:
 
 class LevenshteinNFA(NFA):
     """A Levenshtein Non-Finite Automaton.
-    
+
     Instance Attributes:
         - query: the query string
         - D: max D number of edits allowed (or maximum levenshtein distance D allowed)
-    
+
     Note:
     The state parameter in the below functions is a tuple of two integers.
     The first integer, called the offset, indicates how much of the query string has been matched.
@@ -95,6 +96,7 @@ class LevenshteinNFA(NFA):
     The second integer indicates the max number of edits allowed for THAT state.
     This is calculated by self.D - the number of edits used leading up to that state.
     """
+
     def __init__(self, query: str, D: int = 2) -> None:
         """Initializes a Levenshtein Automaton based on the query string with D max edits
         allowed.
@@ -103,20 +105,20 @@ class LevenshteinNFA(NFA):
         self.D = D
 
     def initial_states(self) -> set:
-        """Returns the initial state in a set. 
+        """Returns the initial state in a set.
         The initial state starts at offset = 0 and self.D max edits allowed.
         """
         return {(0, self.D)}
-    
+
     def accept(self, state: tuple) -> bool:
         """Returns whether the state is a terminal node, indicating that the query string
         has been matched."""
         offset, d = state
         return len(self.query) - offset <= d
-    
+
     def accept_best(self, states: set) -> int:
         """Returns the least number of edits used, among all terminal nodes in states.
-        
+
         If there are no terminal nodes, then returns -1.
         """
         edits_used = float("inf")
@@ -142,29 +144,31 @@ class LevenshteinNFA(NFA):
             if c == self.query[offset + k]:
                 # k edits used
                 yield offset + k + 1, d - k
-    
+
     def simplify(self, states: set) -> Iterator[tuple]:
         """Returns a equivalent, reduced iterator of the given states."""
-    
+
         def _implies(state1: tuple, state2: tuple) -> bool:
             """Returns whether state1 implies state2.
             More precisely, it checks whether exploring state1 also explores state2.
 
             The rule is that any state (n, d) for some positive integers n and d, also imply state
-            (n + k, d - |k|) for some positive/negative integer k as it is just a matter of 
+            (n + k, d - |k|) for some positive/negative integer k as it is just a matter of
             inserting/deleting k times.
             """
             offset1, d1 = state1
             offset2, d2 = state2
-            if d2 < 0:  # more than max edits done, so state2 is redundant regardless of state1
+            if (
+                d2 < 0
+            ):  # more than max edits done, so state2 is redundant regardless of state1
                 return True
             return d1 - d2 >= abs(offset1 - offset2)
-        
+
         def _is_useful(state: tuple) -> bool:
             """Returns whether the given state in the set states is useful or not.
             A state is useful if and only if there does not exist another distinct state that
-            implies the state. 
-            
+            implies the state.
+
             Preconditions:
                 - state in states
             """
@@ -172,9 +176,9 @@ class LevenshteinNFA(NFA):
                 if state != state2 and _implies(state2, state):
                     return False
             return True
-        
+
         return filter(_is_useful, states)
-    
+
     def get_similar_words(self, trie: Trie, N: int = -1) -> list[str]:
         """Returns the N-most similar words.
         If N is not specified, all words are returned.
@@ -184,7 +188,7 @@ class LevenshteinNFA(NFA):
             return [ele[1] for ele in res]
         else:
             return [res[i][1] for i in range(N)]
-    
+
     def intersection_with_trie_dfs(self, trie: Trie) -> list[str]:
         """Returns the words in trie that are within self.D edit distance from the
         self.query string. They are ordered by least edits made.
@@ -196,11 +200,13 @@ class LevenshteinNFA(NFA):
         """
         root = trie.root
         initial_states = self.initial_states()
-        res = self._helper_intersection(initial_states, root, '')
+        res = self._helper_intersection(initial_states, root, "")
         res.sort(key=lambda x: x[0])
         return res
 
-    def _helper_intersection(self, states: tuple, node: _Trie_Node, string_so_far: str) -> list:
+    def _helper_intersection(
+        self, states: tuple, node: _Trie_Node, string_so_far: str
+    ) -> list:
         """Returns the words with their edit distance in trie that are within self.D edit
         distance from the self.query string, by using recursion with DFS."""
         if states == set():
@@ -213,5 +219,7 @@ class LevenshteinNFA(NFA):
         for child, child_node in node.children.items():
             new_string_so_far = string_so_far + child_node.letter
             new_states = self.step(states, child)
-            res.extend(self._helper_intersection(new_states, child_node, new_string_so_far))
+            res.extend(
+                self._helper_intersection(new_states, child_node, new_string_so_far)
+            )
         return res
