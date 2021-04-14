@@ -71,7 +71,7 @@ class Trie:
     def all_words(self) -> list:
         """Returns all the words in the Trie."""
         return self.root._all_words_helper()
-    
+
     def autocomplete_from_prefix(self, prefix: str) -> str:
         """Returns a word inserted in the trie from the given prefix."""
         node = self.root
@@ -87,7 +87,7 @@ class Trie:
             node = node.children[children[0]]
             suffix += node.letter
         return prefix + suffix
-            
+
 
 # Helper methds relating to Trie
 def make_trie(words: list) -> Trie:
