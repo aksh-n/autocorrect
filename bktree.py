@@ -1,6 +1,5 @@
 from backend import Backend
-from typing import SupportsBytes
-from helpers import clean_up_words, levenshtein
+from helpers import clean_up_words, levenshtein, tol
 
 class _BKNode:
     """A node in a BK Tree."""
@@ -90,8 +89,7 @@ class BKTree(Backend):
 
     def get_suggestions(self, word: str, lim: int = 3) -> list[str]:
         # a tentative tolerance
-        tol = max(len(word) // 2, 1)
-        results = self.get_similar_words_ordered(word, tol)
+        results = self.get_similar_words_ordered(word, tol(word))
 
         return results[:lim]
 

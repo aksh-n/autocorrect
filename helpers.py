@@ -34,3 +34,9 @@ def levenshtein(s1: str, s2: str) -> int:
             dp[d] = min(dp[d], dp[d - 1] + 1)
         # print(dp)
     return dp[-1]
+
+def tol(word: str) -> int:
+    """Return the tolerance (max number of edits) accepted for the specific word
+    based on its length.
+    """
+    return min(3, max(len(word) // 2, 1))

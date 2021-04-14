@@ -1,5 +1,7 @@
-from backend import Backend
 from typing import Iterator
+
+from helpers import tol
+from backend import Backend
 from trie import Trie, _Trie_Node
 
 
@@ -233,8 +235,7 @@ class LevenshteinBackend(Backend):
         self._trie = trie
 
     def get_suggestions(self, word: str, lim: int) -> list[str]:
-        tol = max(len(word) // 2, 1)
-        return LevenshteinNFA(word, tol).get_similar_words(self._trie, lim)
+        return LevenshteinNFA(word, tol(word)).get_similar_words(self._trie, lim)
 
 
 if __name__ == '__main__':
