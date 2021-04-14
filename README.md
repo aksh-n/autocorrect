@@ -3,4 +3,4 @@ Autocorrection, also known as autocorrect, refers to the process through which t
 
 Note:
 * the list of 3000 most common English words is retrieved from [this link](https://www.ef.com/wwen/english-resources/english-vocabulary/top-3000-words/).
-* the big_dictionary file is retrieved from [this link](https://norvig.com/ngrams/).
+* the big_dictionary file is adapted from [this link](https://norvig.com/ngrams/).
