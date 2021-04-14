@@ -59,7 +59,7 @@ class App(tk.Frame):
 
 
 class ACHandler:
-    """An abstract class that handles autocorrect/autocomplete functionality
+    """A class that handles autocorrect/autocomplete functionality
     for App."""
 
     BINDINGS: list
