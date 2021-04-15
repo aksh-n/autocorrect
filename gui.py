@@ -54,7 +54,7 @@ class App(tk.Frame):
         # setting borderwidth doesn't seem necessary
         self._status_bar = tk.PanedWindow(self, borderwidth=0)
 
-        self.suggestions = tk.Label(self._status_bar, text='Type something...')
+        self.suggestions = tk.Label(self._status_bar, text='Press Control+num to accept suggestions...')
         self._status_bar.add(self.suggestions)
         self.suggestions.pack(fill=tk.X, expand=1)
 
