@@ -182,9 +182,7 @@ class LevenshteinNFA(NFA):
             """
             offset1, d1 = state1
             offset2, d2 = state2
-            if (
-                d2 < 0
-            ):  # more than max edits done, so state2 is redundant regardless of state1
+            if d2 < 0:  # more than max edits done, so state2 is redundant regardless of state1
                 return True
             return d1 - d2 >= abs(offset1 - offset2)
 
@@ -215,7 +213,7 @@ class LevenshteinNFA(NFA):
         else:
             return [res[i][1] for i in range(N)]
 
-    def intersection_with_trie_dfs(self, trie: Trie) -> list[str]:
+    def intersection_with_trie_dfs(self, trie: Trie) -> list[tuple]:
         """Return the words in trie that are within self.D edit distance from the
         self.query string.
 
@@ -231,9 +229,7 @@ class LevenshteinNFA(NFA):
         res.sort(key=lambda x: x[0])
         return res
 
-    def _helper_intersection(
-        self, states: tuple, node: _TrieNode, string_so_far: str
-    ) -> list:
+    def _helper_intersection(self, states: set, node: _TrieNode, string_so_far: str) -> list:
         """Return the words with their edit distance in trie that are within self.D edit
         distance from the self.query string, by using recursion with DFS."""
         if states == set():
@@ -284,9 +280,14 @@ if __name__ == '__main__':
             "extra-imports": ['helpers', 'backend', 'trie'],
             "allowed-io": [],
             "max-line-length": 100,
-            "disable": ["E1136"],
+            "disable": [
+                "E1136", "C0103", "E9971", "E9970", "R0201"],
         }
     )
+    # C0103 is added because the naming convention is common for the classes/functions used.
+    # E9971 and E9970 is added because the abstract class does not have a fixed type annotation,
+    # it depends on the implementation
+    # R0201 is added because we prefer simplify to be a class method
 
     # uncomment the following for a demo
 
