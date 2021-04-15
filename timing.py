@@ -80,9 +80,8 @@ def time_multiple(D: int = 2, number: int = 10, n: int = -1) -> list[tuple]:
     return res
 
 
-def time_one_query(
-    trie: Trie, bktree: BKTree, query: str, D: int, number: int
-) -> tuple[float, float]:
+def time_one_query(trie: Trie, bktree: BKTree, query: str, D: int,
+                   number: int) -> tuple[float, float]:
     """Return a tuple consisting of the time taken by a Levenshtein Automaton (with a Trie) and
     a BKTree to return suggestions for words similar to query.
 
@@ -102,7 +101,7 @@ def time_one_query(
         return bktree.get_similar_words_ordered(query, D)
 
     time_lev = timeit(_time_levenshtein_nfa, number=number) / number
-    time_bktree = timeit(_time_bktree, number=number)  / number
+    time_bktree = timeit(_time_bktree, number=number) / number
     return time_lev, time_bktree
 
 
@@ -154,6 +153,7 @@ if __name__ == '__main__':
     import doctest
     doctest.testmod()
 
+    # comment the below python_ta code before running the demo
     import python_ta.contracts
     python_ta.contracts.check_all_contracts()
 
@@ -176,11 +176,14 @@ if __name__ == '__main__':
                 'scramble_from_file'
             ],
             "max-line-length": 100,
-            "disable": ["E1136"],
+            "disable": ["E1136", "C0103"],
         }
     )
+    # C0103 is added because the naming convention is common for the classes/functions used.
 
     # uncomment the following for a demo
+    # NOTE: comment out the python_ta code so that it does not influence the timing
+    # experiments.
 
-    res = time_multiple(number=1, n=10)
-    plot_time_statistics(res)
+    # res = time_multiple(number=2, n=20)
+    # plot_time_statistics(res)

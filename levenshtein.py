@@ -268,12 +268,11 @@ if __name__ == '__main__':
     import doctest
     doctest.testmod()
 
+    # NOTE: Comment out the below python_ta code before running the demo
+    # so that it does not influence the runtime.
     import python_ta.contracts
     python_ta.contracts.check_all_contracts()
 
-    # python_ha is not happy about this file
-    # but honestly python_ta sucks
-    # so...
     import python_ta
     python_ta.check_all(
         config={
@@ -291,7 +290,7 @@ if __name__ == '__main__':
 
     # uncomment the following for a demo
 
-    # from trie import *
+    # from trie import make_trie_from_file
     # a = make_trie_from_file('dictionary.txt')
     # b = LevenshteinBackend(a)
     # print(b.get_suggestions('he', 3))
