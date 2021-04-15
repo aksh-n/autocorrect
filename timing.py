@@ -18,7 +18,7 @@ from helpers import clean_up_words
 
 
 def initial_setup() -> tuple[Trie, BKTree]:
-    """Return a Trie and BKTree."""
+    """Return a Trie and BKTree using dictionary.txt."""
     trie = make_trie_from_file("dictionary.txt")
     bktree = make_bktree_from_file("dictionary.txt")
     return trie, bktree
@@ -42,7 +42,7 @@ def write_results_to_file(results: list[tuple[int]]) -> None:
     return None
 
 
-def plot_time_statistics(results: list[tuple[int, int]]) -> None:
+def plot_time_statistics(results: list[tuple[float, float]]) -> None:
     """Plot the time taken by Levenshtein Automata and BKTree in each timing experiment
     from a given list of results.
     """
@@ -82,7 +82,7 @@ def time_multiple(D: int = 2, number: int = 10, n: int = -1) -> list[tuple]:
 
 def time_one_query(
     trie: Trie, bktree: BKTree, query: str, D: int, number: int
-) -> tuple[int]:
+) -> tuple[float, float]:
     """Return a tuple consisting of the time taken by a Levenshtein Automaton (with a Trie) and
     a BKTree to return suggestions for words similar to query.
 
@@ -94,15 +94,15 @@ def time_one_query(
         - number: the parameter passed to timeit
     """
 
-    def _time_levenshtein_nfa():
+    def _time_levenshtein_nfa() -> list[str]:
         lev_nfa = LevenshteinNFA(query, D)
         return lev_nfa.get_similar_words(trie)
 
-    def _time_bktree():
+    def _time_bktree() -> list[str]:
         return bktree.get_similar_words_ordered(query, D)
 
     time_lev = timeit(_time_levenshtein_nfa, number=number) / number
-    time_bktree = timeit(_time_bktree, number=number) / number
+    time_bktree = timeit(_time_bktree, number=number)  / number
     return time_lev, time_bktree
 
 
@@ -179,3 +179,8 @@ if __name__ == '__main__':
             "disable": ["E1136"],
         }
     )
+
+    # uncomment the following for a demo
+
+    res = time_multiple(number=1, n=10)
+    plot_time_statistics(res)
