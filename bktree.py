@@ -1,10 +1,27 @@
+"""Autocorrect, BKTree
+
+This module contains the BKTree class, a data structure (a tree) for implementing autocorrection.
+
+Copyright (c) 2021 Akshat Naik and Tony (Juntao) Hu.
+Licensed under the MIT License. See LICENSE in the project root for license information.
+"""
 from backend import Backend
 from helpers import clean_up_words, levenshtein, tol
 
+
 class _BKNode:
-    """A node in a BK Tree."""
+    """A node in a Burkhard Keller Tree.
+
+    Instance Attributes:
+        - word: the word that this node represents
+        - children: the children of this node
+
+    Each edge is associated with an integer represeting the levenshtein distance between the
+    parent and child.
+    """
+
     word: str
-    children: dict[int, "_BKNode"]
+    children: dict[int, '_BKNode']
 
     def __init__(self, word: str) -> None:
         self.word = word
@@ -13,7 +30,7 @@ class _BKNode:
     def similar_words(self, word: str, tolerance: int) -> list[str]:
         """Return a list of words with levenshtein distance <= tolerance from self.word.
 
-        Currently this function is using DFS.
+        This function uses DFS.
         """
         lst = []
         dist = levenshtein(self.word, word)
@@ -30,7 +47,8 @@ class _BKNode:
 
     def similar_words_ordered(self, word: str, tolerance: int) -> list[str]:
         """Return a list of words with levenshtein distance <= tolerance from self.word,
-        in ascending order of their lv distance."""
+        in ascending order of their lv distance.
+        """
         lst = self._similar_helper(word, tolerance)
         lst.sort(key=lambda each: each[1])
         return [each[0] for each in lst]
@@ -52,14 +70,22 @@ class _BKNode:
 
 
 class BKTree(Backend):
-    """An implementation of the BK Tree data structure."""
+    """An implementation of the Burkhard Keller Tree data structure, which is a tree used for
+    implementing autocorrection.
+
+    Instance Attributes:
+        - root: the root of this BKTree
+
+    In this implementation, an empty BKTree is impossible. A BKTree instance must contain at least
+    one word, the root.
+    """
     root: _BKNode
 
     def __init__(self, root_word: str) -> None:
         self.root = _BKNode(root_word)
 
     def insert(self, word: str) -> None:
-        """Insert a word."""
+        """Insert a word into the BKTree."""
         # be sensible, we don't need an empty word
         if word == "":
             return
@@ -84,20 +110,21 @@ class BKTree(Backend):
 
     def get_similar_words_ordered(self, word: str, tolerance: int = 2) -> list[str]:
         """Return a list of words with editing distance <= tolerance from the root
-        in ascending order of their lv distance."""
+        in ascending order of their lv distance.
+        """
         return self.root.similar_words_ordered(word, tolerance)
 
     def get_suggestions(self, word: str, lim: int = 3) -> list[str]:
-        # a tentative tolerance
+        """Implementation of the abstract method from the Backend interface."""
         results = self.get_similar_words_ordered(word, tol(word))
-
         return results[:lim]
 
 
 def make_bktree(words: list[str]) -> BKTree:
     """Make a BKTree from a list of words.
 
-    The argument words should NOT be empty.
+    Preconditions:
+        - len(words) != 0
     """
     tree = BKTree(words[0])
 
@@ -105,6 +132,7 @@ def make_bktree(words: list[str]) -> BKTree:
         tree.insert(each)
 
     return tree
+
 
 def make_bktree_from_file(filename: str) -> BKTree:
     """Make a BKTree from a file."""
@@ -114,3 +142,26 @@ def make_bktree_from_file(filename: str) -> BKTree:
         new_words = clean_up_words(words)
 
     return make_bktree(new_words)
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
+
+    import python_ta.contracts
+    python_ta.contracts.check_all_contracts()
+
+    import python_ta
+    python_ta.check_all(
+        config={
+            "extra-imports": ['backend', 'helpers'],
+            "allowed-io": ['make_bktree_from_file'],
+            "max-line-length": 100,
+            "disable": ["E1136"],
+        }
+    )
+
+    # uncomment the following for a demo
+
+    # a = make_bktree_from_file('dictionary.txt')
+    # print(a.get_similar_words_ordered('teh', 3)[:3])

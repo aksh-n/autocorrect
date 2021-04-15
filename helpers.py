@@ -28,6 +28,7 @@ def clean_up_words(words: list) -> list:
 
 def levenshtein(s1: str, s2: str) -> int:
     """Returns the minimum edit distance between strings s1 and s2.
+
     This function implements the Levenshtein distance algorithm using Dynamic Programming.
     """
     dp = list(range(0, len(s2) + 1))  # dp stands for dynamic programming
@@ -45,7 +46,7 @@ def levenshtein(s1: str, s2: str) -> int:
 
 
 def tol(word: str) -> int:
-    """Return the tolerance (max number of edits) accepted for the specific word
+    """Return the tolerance (max Levenshtein distance) accepted for the specific word
     based on its length.
     """
     return min(3, max(len(word) // 2, 1))

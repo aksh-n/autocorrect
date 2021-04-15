@@ -1,15 +1,24 @@
-"""GUI for autocorrect."""
+"""Autocorrect, GUI
+
+This module contains all the GUI components for the autocorrect/autocomplete text editor.
+
+Copyright (c) 2021 Akshat Naik and Tony (Juntao) Hu.
+Licensed under the MIT License. See LICENSE in the project root for license information.
+"""
 import tkinter as tk
 
 from backend import Backend
 from bktree import make_bktree_from_file
-from levenshtein_automaton import LevenshteinBackend
+from levenshtein import LevenshteinBackend
 from trie import Trie, make_trie_from_file
 
 
 class App(tk.Frame):
     """The main GUI class."""
+
+    # the main text area
     text_area: tk.Text
+    # the suggestion bar at the bottom of the window
     suggestions: tk.Label
 
     _status_bar: tk.PanedWindow
@@ -60,14 +69,18 @@ class App(tk.Frame):
 
 class ACHandler:
     """A class that handles autocorrect/autocomplete functionality
-    for App."""
+    for App.
+    """
 
+    # all the events that trigger responses
     BINDINGS: list
+
     _app: App
     _ta: tk.Text
 
-    # CHANGE THIS FOR A DIFFERENT DICTIONARY
-    DICT_FILE = 'big_dictionary.txt'
+    # the dictionary to use
+    # change this if you want to use a different dictionary
+    DICT_FILE: str = 'big_dictionary.txt'
 
     _trie: Trie                 # dictionary of correct words
     _backend: Backend
@@ -75,7 +88,11 @@ class ACHandler:
     _suggestions: list[str]     # keeps track of the current suggestions
 
     def __init__(self, app: App, which: str) -> None:
-        """Note: which in {'lv', 'bk'}"""
+        """Initialize an ACHandler.
+
+        Preconditions:
+            - which in {'lv', 'bk'}
+        """
         self.BINDINGS = [
             ('<KeyRelease>', self._key_released),
             ('<ButtonRelease>', self._button_pressed),
@@ -102,10 +119,15 @@ class ACHandler:
         self._update_suggestions()
 
     def _button_pressed(self, event: tk.Event) -> None:
+        """Handle updates associated with (mouse) button presses."""
         self._set_word_start()
         self._update_suggestions()
 
     def _replace(self, event: tk.Event) -> None:
+        """Handle updates when the user chooses an autocomplete/autocorrect option.
+
+        To accept a suggestion, press CONTROL + num, where num corresponds to the option number.
+        """
         if event.keysym in '123456':
             choice = int(event.keysym)
             # valid choice
@@ -125,13 +147,12 @@ class ACHandler:
             self._ta.mark_set('start', '1.0')
         elif self._ta.index(cursor_ind + ' wordstart') == cursor_ind:
             self._ta.mark_set('start', cursor_ind + '-1c wordstart')
-            # if self._ta.index(cursor_ind + '-1c' + ' wordstart') == self._ta.index(cursor_ind + '-1c'):
         else:
             self._ta.mark_set('start', cursor_ind + ' wordstart')
 
     def _update_suggestions(self) -> None:
+        """Update the suggestion list."""
         cur_word = self._ta.get('start', tk.INSERT)
-        print('-> ' + cur_word)
 
         if cur_word == self._prev_word:
             return
@@ -154,7 +175,7 @@ class ACHandler:
         self._app.suggestions['text'] = self._format_suggestions(
             self._suggestions)
 
-    def _format_suggestions(self, sug: list[str]):
+    def _format_suggestions(self, sug: list[str]) -> str:
         """A helper for formatting suggestions."""
         output = ''
         for ind, word in enumerate(sug):
@@ -165,7 +186,26 @@ class ACHandler:
         return output
 
 
-if __name__ == '__main__':
+def run() -> None:
+    """Run the GUI."""
     root = tk.Tk()
     app = App(root)
     root.mainloop()
+
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()
+
+    import python_ta.contracts
+    python_ta.contracts.check_all_contracts()
+
+    import python_ta
+    python_ta.check_all(
+        config={
+            "extra-imports": ['tkinter', 'bktree', 'levenshtein', 'backend', 'trie'],
+            "allowed-io": [],
+            "max-line-length": 100,
+            "disable": ["E1136"],
+        }
+    )
