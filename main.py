@@ -9,6 +9,7 @@ Licensed under the MIT License. See LICENSE in the project root for license info
 
 if __name__ == '__main__':
     from gui import run
+    from timing import read_results_from_file, plot_time_statistics
 
     print('Welcome to AutoC by Akshat Naik and Tony (Juntao) Hu.')
     print('Choose an option from the two below:')
@@ -21,8 +22,9 @@ if __name__ == '__main__':
 
     choice = int(inp)
     if choice == 1:
-        pass
-        # ADD TIMING RESULT CODE HERE
+        print('NOTE: The results from the timing experiments have been recorded to save time.')
+        res = read_results_from_file()
+        plot_time_statistics(res)
     else:
         print('NOTE: The GUI may take a bit of time to load. '
               'It may also not load in the foreground. Check the background!'
