@@ -6,4 +6,5 @@ Note:
 * the big_dictionary file is adapted from [this link](https://norvig.com/ngrams/).
 
 # Instructions:
-Run ``python main.py``
+To install the libraries, run ``pip install -r requirements.txt``.
+Run ``python main.py``.
