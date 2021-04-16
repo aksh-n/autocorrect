@@ -152,7 +152,7 @@ class ACHandler:
 
     def _update_suggestions(self) -> None:
         """Update the suggestion list."""
-        cur_word = self._ta.get('start', tk.INSERT)
+        cur_word = self._ta.get('start', tk.INSERT).lower()
 
         if cur_word == self._prev_word:
             return
