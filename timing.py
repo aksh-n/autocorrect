@@ -150,6 +150,7 @@ def scramble(word: str) -> str:
 
 
 if __name__ == '__main__':
+    # comment out the doctest code as well
     import doctest
     doctest.testmod()
 
@@ -182,7 +183,7 @@ if __name__ == '__main__':
     # C0103 is added because the naming convention is common for the classes/functions used.
 
     # uncomment the following for a demo
-    # NOTE: comment out the python_ta code so that it does not influence the timing
+    # NOTE: comment out the above code so that it does not influence the timing
     # experiments.
 
     # res = time_multiple(number=2, n=20)
