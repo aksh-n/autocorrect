@@ -7,4 +7,5 @@ Note:
 
 # Instructions:
 To install the libraries, run ``pip install -r requirements.txt``.
-Run ``python main.py``.
+
+Then, run ``python main.py``.
