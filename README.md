@@ -9,3 +9,5 @@ Note:
 To install the libraries, run ``pip install -r requirements.txt``.
 
 Then, run ``python main.py``.
+
+This project was tested with Python 3.9.
