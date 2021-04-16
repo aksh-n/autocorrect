@@ -26,7 +26,7 @@ class App(tk.Frame):
 
     def __init__(self, master=None):
         super().__init__(master)
-        self.master.title('Some Title')
+        self.master.title('Text Editor')
         self.master.geometry('700x500')
         self._add_menu()
         self._add_elements()
