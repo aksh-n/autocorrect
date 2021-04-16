@@ -22,7 +22,8 @@ if __name__ == '__main__':
 
     choice = int(inp)
     if choice == 1:
-        print('NOTE: The results from the timing experiments have been recorded to save time.')
+        print('NOTE: The results from the timing experiments were pre-recorded to save time.')
+        print('Uncomment and run the code in timing.py to see a live demo.')
         res = read_results_from_file()
         plot_time_statistics(res)
     else:
