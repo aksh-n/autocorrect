@@ -80,7 +80,7 @@ class ACHandler:
 
     # the dictionary to use
     # change this if you want to use a different dictionary
-    DICT_FILE: str = 'big_dictionary.txt'
+    DICT_FILE: str = 'sowpods.txt'
 
     _trie: Trie                 # dictionary of correct words
     _backend: Backend
